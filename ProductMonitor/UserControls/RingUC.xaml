@@ -1,0 +1,36 @@
+﻿<UserControl
+    x:Class="ProductMonitor.UserControls.RingUC"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProductMonitor.UserControls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <Grid x:Name="LayOutGrid">
+        <!--  分三步驟  -->
+        <!--  畫空的圓環  -->
+        <Ellipse
+            Width="{Binding ElementName=LayOutGrid, Path=ActualWidth}"
+            Height="{Binding ElementName=LayOutGrid, Path=ActualHeight}"
+            Stroke="#22ffffff"
+            StrokeThickness="8" />
+        <!--  根據百分比的值上色  -->
+        <Path
+            x:Name="path"
+            Stroke="Orange"
+            StrokeEndLineCap="Round"
+            StrokeStartLineCap="Round"
+            StrokeThickness="7" />
+
+        <!--  中間顯示具體的百分比  -->
+        <TextBlock
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Foreground="White">
+            <Run FontSize="22" Text="{Binding PercentValue, RelativeSource={RelativeSource AncestorType=UserControl}, StringFormat={}{0:#}}" />
+            <Run Text="%" />
+        </TextBlock>
+    </Grid>
+</UserControl>

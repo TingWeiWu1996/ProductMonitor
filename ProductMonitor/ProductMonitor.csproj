@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resource\Fonts\NotoSansTC-Bold.ttf" />
+    <None Remove="Resource\Fonts\Pixel.ttf" />
+    <None Remove="Resource\Images\alarm.png" />
+    <None Remove="Resource\Images\cogwheel.png" />
+    <None Remove="Resource\Images\device.png" />
+    <None Remove="Resource\Images\minimize-sign.png" />
+    <None Remove="Resource\Images\seticon.png" />
+    <None Remove="Resource\Images\welding.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LiveCharts.Wpf" Version="0.9.7" />
+    <PackageReference Include="NModbus4" Version="2.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resource\Fonts\NotoSansTC-Black.ttf" />
+    <Resource Include="Resource\Fonts\NotoSansTC-Bold.ttf" />
+    <Resource Include="Resource\Fonts\Pixel.ttf" />
+    <Resource Include="Resource\Images\alarm.png" />
+    <Resource Include="Resource\Images\cogwheel.png" />
+    <Resource Include="Resource\Images\device.png" />
+    <Resource Include="Resource\Images\minimize-sign.png" />
+    <Resource Include="Resource\Images\seticon.png" />
+    <Resource Include="Resource\Images\welding.png" />
+  </ItemGroup>
+
+</Project>

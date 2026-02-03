@@ -1,0 +1,147 @@
+﻿<Window
+    x:Class="ProductMonitor.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProductMonitor"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="生產監控平台"
+    Width="1200"
+    Height="750"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+    <WindowChrome.WindowChrome>
+        <WindowChrome GlassFrameThickness="0" />
+    </WindowChrome.WindowChrome>
+
+
+    <Grid>
+        <Grid.Background>
+            <!--  背景顏色漸層  -->
+            <RadialGradientBrush>
+                <!--  由中間到外  -->
+                <!--  LinerGradientBrush  由左到右  -->
+                <!--  GradientStop由裡向外漸層  -->
+                <GradientStop Offset="0.0" Color="#FFE3F2FD" />
+                <GradientStop Offset="0.5" Color="#FF90CAF9" />
+                <GradientStop Offset="1" Color="#979de8" />
+            </RadialGradientBrush>
+        </Grid.Background>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="650" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <!--  第一行 頭部  -->
+        <Border BorderBrush="#478cc6" BorderThickness="0,0,0,1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="60" />
+                    <ColumnDefinition Width="AUTO" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!--  這裡可以放LOGO  -->
+
+                <!--  第二列  -->
+                <StackPanel
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    Orientation="Vertical">
+                    <TextBlock
+                        FontSize="16"
+                        Foreground="White"
+                        Text="生產監控平台" />
+                    <TextBlock
+                        Margin="0,2,0,0"
+                        FontSize="12"
+                        Foreground="White"
+                        Text="ProductMonitor" />
+                </StackPanel>
+                <!--  第三列  -->
+                <Grid Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <StackPanel
+                        HorizontalAlignment="Right"
+                        Background="Transparent"
+                        Orientation="Horizontal"
+                        WindowChrome.IsHitTestVisibleInChrome="True">
+                        <!--  最小化  -->
+                        <Button
+                            Click="MinimizeButton_Click"
+                            Content="&#xE921;"
+                            Style="{StaticResource OperateBtnStyle}" />
+                        <!--  最大化/還原  -->
+                        <Button
+                            Click="MaximizeButton_Click"
+                            Content="&#xE922;"
+                            Style="{StaticResource OperateBtnStyle}" />
+                        <!--  關閉  -->
+                        <Button
+                            Background="DarkRed"
+                            Click="CloseButton_Click"
+                            Content="&#xE8BB;"
+                            Style="{StaticResource OperateBtnStyle}" />
+                    </StackPanel>
+                    <!--  第二行  -->
+                    <Border
+                        Grid.Row="1"
+                        BorderBrush="#5518aabd"
+                        BorderThickness="0,1,0,0">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                <GradientStop Offset="0.0" Color="#2218aabd" />
+                                <GradientStop Offset="1.0" Color="#0018aabd" />
+                            </LinearGradientBrush>
+                        </Border.Background>
+                    </Border>
+                </Grid>
+            </Grid>
+        </Border>
+        <!--  第二行 內容  -->
+        <ContentControl Grid.Row="1" Content="{Binding MonitorUC}" />
+        <!--  第三行 底部  -->
+        <Border
+            Grid.Row="2"
+            BorderBrush="#5518aabd"
+            BorderThickness="0,1,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <!--  第一列  -->
+                <Border BorderBrush="#5518aabd" BorderThickness="0,1,0,0">
+                    <Border.Background>
+                        <VisualBrush
+                            TileMode="FlipXY"
+                            ViewboxUnits="Absolute"
+                            Viewport="0,0,7,7">
+                            <VisualBrush.Visual>
+                                <Line
+                                    Stroke="Gray"
+                                    StrokeThickness="1"
+                                    X1="0"
+                                    X2="10"
+                                    Y1="10"
+                                    Y2="0" />
+                            </VisualBrush.Visual>
+                        </VisualBrush>
+                    </Border.Background>
+                </Border>
+
+                <!--  第二列  -->
+                <TextBlock
+                    Grid.Column="1"
+                    FontSize="15"
+                    FontWeight="Bold"
+                    Foreground="White"
+                    Text="WPF練習" />
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

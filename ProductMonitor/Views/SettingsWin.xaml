@@ -1,0 +1,83 @@
+﻿<Window
+    x:Class="ProductMonitor.Views.SettingsWin"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ProductMonitor.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="系統配置"
+    Width="800"
+    Height="450"
+    Background="Transparent"
+    FontFamily="Microsoft Yi Baiti"
+    FontWeight="ExtraLight"
+    WindowStartupLocation="CenterOwner"
+    mc:Ignorable="d">
+    <WindowChrome.WindowChrome>
+        <WindowChrome GlassFrameThickness="-1" />
+    </WindowChrome.WindowChrome>
+    <Window.Resources>
+        <Style TargetType="RadioButton">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border Height="30" Background="{TemplateBinding Background}">
+                            <ContentPresenter Margin="10,0" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter Property="Background" Value="#18aabd" />
+                    <Setter Property="Foreground" Value="White" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="130" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <TextBlock Margin="10,0" VerticalAlignment="Center">
+            <Image
+                Width="16"
+                Height="16"
+                Source="/Resource/Images/seticon.png" />
+            <Run
+                FontSize="14"
+                FontWeight="Bold"
+                Text="系統配置訊息" />
+        </TextBlock>
+        <Border
+            Grid.Row="1"
+            BorderBrush="#ddd"
+            BorderThickness="0,0,1,0" />
+        <StackPanel Grid.Row="1" Margin="10,0">
+            <RadioButton
+                Click="RadioButton_Click"
+                Content="設備清單"
+                IsChecked="True" 
+                Tag="data1"/>
+            <RadioButton Click="RadioButton_Click" Tag="data2" Content="環境監測" />
+            <RadioButton Click="RadioButton_Click" Tag="data3" Content="設備監測" />
+            <RadioButton Click="RadioButton_Click" Tag="data4" Content="配置一" />
+            <RadioButton Click="RadioButton_Click" Tag="data5" Content="配置二" />
+        </StackPanel>
+        <ScrollViewer
+            Grid.Row="1"
+            Grid.Column="1"
+            VerticalScrollBarVisibility="Hidden">
+            <Frame
+                x:Name="frame"
+                NavigationUIVisibility="Hidden"
+                Source="/ProductMonitor;component/Views/SettingPage.xaml" />
+        </ScrollViewer>
+    </Grid>
+</Window>
