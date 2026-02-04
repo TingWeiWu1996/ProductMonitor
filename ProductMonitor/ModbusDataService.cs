@@ -1,0 +1,145 @@
+﻿using NModbus;
+using ProductMonitor.Models;
+using System;
+using System.Collections.Generic;
+using System.Net.Sockets;
+
+namespace ProductMonitor.Services
+{
+    public class ModbusDataService : IDataService
+    {
+        /*
+        private readonly string _ipAddress = "127.0.0.1";
+        private readonly int _port = 502;
+        */
+        public List<EnviromentModel> GetEnvironmentData()
+        {
+            try
+            {
+                // 改成讀取 DeviceConfig 的設定
+                using (TcpClient client = new TcpClient(DeviceConfig.IpAddress, DeviceConfig.Port))
+                {
+                    // ... 以下代碼保持不變 ...
+                    var factory = new ModbusFactory();
+                    IModbusMaster master = factory.CreateMaster(client);
+                    master.Transport.ReadTimeout = 1000;
+
+                    ushort[] registers = master.ReadHoldingRegisters(1, 0, 7);
+
+                    return new List<EnviromentModel>
+                    {
+                        new EnviromentModel() { EnItemName = "光線", EnItemValue = registers[0] },
+                        new EnviromentModel() { EnItemName = "噪音", EnItemValue = registers[1] },
+                        new EnviromentModel() { EnItemName = "溫度", EnItemValue = registers[2] },
+                        new EnviromentModel() { EnItemName = "濕度", EnItemValue = registers[3] },
+                        new EnviromentModel() { EnItemName = "PM2.5", EnItemValue = registers[4] },
+                        new EnviromentModel() { EnItemName = "硫化氫", EnItemValue = registers[5] },
+                        new EnviromentModel() { EnItemName = "氮氣", EnItemValue = registers[6] }
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                // 【重要】這裡就是為什麼你的環境數據會消失
+                // 當連線失敗時，為了不讓畫面全白，我們這邊先回傳「假資料」作為備案
+                // 同時在 Output 視窗印出錯誤，方便你除錯
+                System.Diagnostics.Debug.WriteLine($"Modbus 連線失敗: {ex.Message}");
+
+                return new List<EnviromentModel>
+                {
+                    new EnviromentModel() { EnItemName = "光線(斷線)", EnItemValue = 0 },
+                    new EnviromentModel() { EnItemName = "噪音", EnItemValue = 0 },
+                    new EnviromentModel() { EnItemName = "溫度", EnItemValue = 0 },
+                    new EnviromentModel() { EnItemName = "濕度", EnItemValue = 0 },
+                    new EnviromentModel() { EnItemName = "PM2.5", EnItemValue = 0 },
+                    new EnviromentModel() { EnItemName = "硫化氫", EnItemValue = 0 },
+                    new EnviromentModel() { EnItemName = "氮氣", EnItemValue = 0 }
+                };
+            }
+        }
+
+        // --- 下面這些函式先把 MockDataService 的內容搬過來，讓畫面有東西顯示 ---
+
+        public List<DeviceModel> GetDeviceData()
+        {
+            // 暫時回傳假資料，之後有 Modbus 點位再來改這裡
+            return new List<DeviceModel>
+            {
+                new DeviceModel() { Value = "60.8", DeviceItem = "電力" },
+                new DeviceModel() { Value = "390", DeviceItem = "電壓" },
+                new DeviceModel() { Value = "5", DeviceItem = "電流" },
+                new DeviceModel() { Value = "13", DeviceItem = "壓差" },
+                new DeviceModel() { Value = "36", DeviceItem = "溫度" },
+                new DeviceModel() { Value = "4.1", DeviceItem = "震動" },
+                new DeviceModel() { Value = "2600", DeviceItem = "轉速" },
+                new DeviceModel() { Value = "0.5", DeviceItem = "氣壓" }
+            };
+        }
+
+        public List<RaderModel> GetRaderData()
+        {
+            return new List<RaderModel>
+            {
+                new RaderModel() { ItemName = "抽煙機", Value = 90 },
+                new RaderModel() { ItemName = "電梯", Value = 30.00 },
+                new RaderModel() { ItemName = "供水器", Value = 34.89 },
+                new RaderModel() { ItemName = "泵", Value = 69.59 },
+                new RaderModel() { ItemName = "穩壓設備", Value = 20 }
+            };
+        }
+
+        public List<AlarmModel> GetAlarmData()
+        {
+            return new List<AlarmModel>
+            {
+                new AlarmModel() { Num = "01", Msg = "設備溫度過高", Time = "2024-11-23", Duration = 7 },
+                new AlarmModel() { Num = "02", Msg = "設備溫度過高", Time = "2024-12-23", Duration = 10 },
+                new AlarmModel() { Num = "03", Msg = "設備轉速過快", Time = "2024-10-23", Duration = 12 },
+                new AlarmModel() { Num = "04", Msg = "設備氣壓偏低", Time = "2024-09-23", Duration = 90 }
+            };
+        }
+
+        public List<MachineModel> GetMachineData()
+        {
+            var list = new List<MachineModel>();
+            Random random = new Random();
+            for (int i = 0; i < 20; i++)
+            {
+                int plan = random.Next(100, 1000);
+                int finished = random.Next(0, plan);
+                list.Add(new MachineModel
+                {
+                    MachineName = "焊接機-" + (i + 1),
+                    FinishedCount = finished,
+                    PlanCount = plan,
+                    Status = "作業中",
+                    OrderNo = "SO202400"
+                });
+            }
+            return list;
+        }
+
+        public List<StaffOutWorkModel> GetStaffOutWorkData()
+        {
+            return new List<StaffOutWorkModel>
+            {
+                new StaffOutWorkModel { StaffName = "張三", Position = "技術員", OutWorkCount = 123 },
+                new StaffOutWorkModel { StaffName = "李四", Position = "技術員", OutWorkCount = 50 },
+                new StaffOutWorkModel { StaffName = "王五", Position = "技術員", OutWorkCount = 15 },
+                new StaffOutWorkModel { StaffName = "楊六", Position = "技術員", OutWorkCount = 20 },
+                new StaffOutWorkModel { StaffName = "吳七", Position = "工程師", OutWorkCount = 0 }
+            };
+        }
+
+        public List<WorkShopModel> GetWorkShopData()
+        {
+            return new List<WorkShopModel>
+            {
+                new WorkShopModel() { WorkShopName = "貼片部", WorkingCount = 120, WaitCount = 20, WrongCount = 5, StopCount = 10 },
+                new WorkShopModel() { WorkShopName = "封裝部", WorkingCount = 120, WaitCount = 20, WrongCount = 5, StopCount = 10 },
+                new WorkShopModel() { WorkShopName = "焊接部", WorkingCount = 120, WaitCount = 20, WrongCount = 5, StopCount = 10 },
+                new WorkShopModel() { WorkShopName = "貼片部", WorkingCount = 120, WaitCount = 20, WrongCount = 5, StopCount = 10 }
+            };
+        }
+    }
+}

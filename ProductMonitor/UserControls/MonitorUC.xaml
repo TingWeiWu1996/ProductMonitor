@@ -45,7 +45,7 @@
                                 Data="M0 0,3 3,30 3,33 0,68 0,73 7,78 7,78,10M8 0,25 0"
                                 Stroke="#9918aabd" />
 
-                            <!--  左下角的线条  -->
+                            <!--  左下角的線  -->
                             <Polyline
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Bottom"
@@ -53,7 +53,7 @@
                                 Stroke="#9918aabd"
                                 StrokeThickness="1" />
 
-                            <!--  右下角的线  -->
+                            <!--  右下角的線  -->
                             <Polyline
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Bottom"
@@ -68,34 +68,34 @@
                                 Fill="#9918aabd"
                                 Points="0 7,7 7,7 0" />
 
-                            <!--  上面的线  -->
+                            <!--  上面的線  -->
                             <Border
                                 Margin="30,-0.5,78,0"
                                 VerticalAlignment="top"
                                 BorderBrush="#9918aabd"
                                 BorderThickness="0,1,0,0" />
-                            <!--  右边的线  -->
+                            <!--  右邊的線  -->
                             <Border
                                 Margin="0,10"
                                 HorizontalAlignment="Right"
                                 BorderBrush="#9918aabd"
                                 BorderThickness="0,0,1,0" />
 
-                            <!--  下面的线  -->
+                            <!--  下面的線  -->
                             <Border
                                 Margin="10,0"
                                 VerticalAlignment="Bottom"
                                 BorderBrush="#9918aabd"
                                 BorderThickness="0,0,0,1" />
 
-                            <!--  左边的线  -->
+                            <!--  左邊的線  -->
                             <Border
                                 Margin="-0.5,15"
                                 HorizontalAlignment="Left"
                                 BorderBrush="#9918aabd"
                                 BorderThickness="1,0,0,0" />
 
-                            <!--  文字前的装饰  -->
+
                             <Path
                                 Margin="10,13"
                                 Data="M0 0,3 0,5 4,3 8,0 8,3 4"
@@ -111,7 +111,7 @@
                                 FontWeight="Bold"
                                 Foreground="White"
                                 Text="{TemplateBinding Header}" />
-                            <!--  显示内容  -->
+                            <!--  顯示内容  -->
                             <ContentPresenter />
                         </Grid>
                     </ControlTemplate>
@@ -250,19 +250,87 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <StackPanel
+                                <Border
                                     Margin="0,5"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center">
-                                    <TextBlock
-                                        FontSize="16"
-                                        Foreground="#ff2bedf1"
-                                        Text="{Binding EnItemValue}" />
-                                    <TextBlock
-                                        FontSize="12"
-                                        Foreground="White"
-                                        Text="{Binding EnItemName}" />
-                                </StackPanel>
+                                    Background="Transparent"
+                                    Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=UserControl}}">
+
+                                    <Border.ToolTip>
+                                        <ToolTip
+                                            Background="#152144"
+                                            BorderBrush="#29D8D5"
+                                            DataContext="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}"
+                                            HasDropShadow="True">
+
+                                            <Grid Width="250" Height="150">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="*" />
+                                                </Grid.RowDefinitions>
+
+                                                <StackPanel
+                                                    Margin="0,5"
+                                                    HorizontalAlignment="Center"
+                                                    Orientation="Horizontal">
+                                                    <TextBlock
+                                                        FontWeight="Bold"
+                                                        Foreground="White"
+                                                        Text="溫度趨勢 (筆數:" />
+                                                    <TextBlock
+                                                        Margin="5,0,0,0"
+                                                        FontWeight="Bold"
+                                                        Foreground="#29D8D5"
+                                                        Text="{Binding TempValues.Count}" />
+                                                    <TextBlock
+                                                        FontWeight="Bold"
+                                                        Foreground="White"
+                                                        Text=")" />
+                                                </StackPanel>
+
+                                                <lvc:CartesianChart
+                                                    Grid.Row="1"
+                                                    Margin="5"
+                                                    DataTooltip="{x:Null}"
+                                                    DisableAnimations="True"
+                                                    Hoverable="False">
+                                                    <lvc:CartesianChart.Series>
+                                                        <lvc:LineSeries
+                                                            Fill="Transparent"
+                                                            LineSmoothness="0"
+                                                            PointGeometry="{x:Null}"
+                                                            Stroke="#29D8D5"
+                                                            StrokeThickness="2"
+                                                            Values="{Binding TempValues}" />
+                                                    </lvc:CartesianChart.Series>
+                                                    <lvc:CartesianChart.AxisX>
+                                                        <lvc:Axis ShowLabels="False" />
+                                                    </lvc:CartesianChart.AxisX>
+                                                    <lvc:CartesianChart.AxisY>
+                                                        <lvc:Axis
+                                                            FontSize="10"
+                                                            Foreground="#AAFFFFFF"
+                                                            ShowLabels="True">
+                                                            <lvc:Axis.Separator>
+                                                                <lvc:Separator Stroke="#33FFFFFF" />
+                                                            </lvc:Axis.Separator>
+                                                        </lvc:Axis>
+                                                    </lvc:CartesianChart.AxisY>
+                                                </lvc:CartesianChart>
+                                            </Grid>
+                                        </ToolTip>
+                                    </Border.ToolTip>
+
+                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <TextBlock
+                                            FontSize="16"
+                                            Foreground="#ff2bedf1"
+                                            Text="{Binding EnItemValue}" />
+                                        <TextBlock
+                                            FontSize="12"
+                                            Foreground="White"
+                                            Text="{Binding EnItemName}" />
+                                    </StackPanel>
+                                </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

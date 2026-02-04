@@ -156,8 +156,94 @@
             <TextBlock Text="設備監測内容" />
         </Grid>
 
-        <Grid Grid.Row="7" Height="200">
-            <TextBlock Text="配置一内容" />
+        <Grid Grid.Row="7" Margin="20">
+            <Border
+                Padding="20"
+                Background="#152144"
+                CornerRadius="10">
+                <StackPanel
+                    Width="400"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center">
+                    <TextBlock
+                        Margin="0,0,0,20"
+                        FontSize="18"
+                        FontWeight="Bold"
+                        Foreground="#29D8D5"
+                        Text="系統連線配置" />
+
+                    <StackPanel Margin="0,10" Orientation="Horizontal">
+                        <TextBlock
+                            Width="100"
+                            VerticalAlignment="Center"
+                            FontSize="14"
+                            Foreground="#AAFFFFFF"
+                            Text="模擬模式：" />
+                        <CheckBox VerticalAlignment="Center" IsChecked="{Binding IsSimulation}">
+                            <TextBlock
+                                FontSize="14"
+                                Foreground="White"
+                                Text="啟用虛擬數據 (不連線 PLC)" />
+                        </CheckBox>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,10" Orientation="Horizontal">
+                        <TextBlock
+                            Width="100"
+                            VerticalAlignment="Center"
+                            FontSize="14"
+                            Foreground="#AAFFFFFF"
+                            Text="PLC IP：" />
+                        <TextBox
+                            Width="200"
+                            Height="30"
+                            Padding="5"
+                            Background="#0B1221"
+                            BorderBrush="#29D8D5"
+                            FontSize="14"
+                            Foreground="White"
+                            Text="{Binding IpAddress}" />
+                    </StackPanel>
+
+                    <StackPanel Margin="0,10" Orientation="Horizontal">
+                        <TextBlock
+                            Width="100"
+                            VerticalAlignment="Center"
+                            FontSize="14"
+                            Foreground="#AAFFFFFF"
+                            Text="Port：" />
+                        <TextBox
+                            Width="200"
+                            Height="30"
+                            Padding="5"
+                            Background="#0B1221"
+                            BorderBrush="#29D8D5"
+                            FontSize="14"
+                            Foreground="White"
+                            Text="{Binding Port}" />
+                    </StackPanel>
+
+                    <Button
+                        Width="150"
+                        Height="40"
+                        Margin="100,20,0,0"
+                        HorizontalAlignment="Left"
+                        Background="#29D8D5"
+                        Command="{Binding SaveCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                        Content="儲存並套用"
+                        Cursor="Hand"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        Foreground="#152144">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="5" />
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                </StackPanel>
+            </Border>
         </Grid>
 
         <Grid Grid.Row="9" Height="200">

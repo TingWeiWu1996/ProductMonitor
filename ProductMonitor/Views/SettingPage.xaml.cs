@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProductMonitor.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -21,6 +22,9 @@ namespace ProductMonitor.Views
         public SettingPage()
         {
             InitializeComponent();
+
+            // 【關鍵】綁定 ViewModel
+            this.DataContext = new SettingsVM();
         }
     }
 }

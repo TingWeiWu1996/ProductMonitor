@@ -8,7 +8,7 @@ namespace ProductMonitor.Models
     /// <summary>
     /// 缺崗人員數據模型
     /// </summary>
-    internal class StaffOutWorkModel
+    public class StaffOutWorkModel
     {
         /// <summary>
         /// 員工姓名

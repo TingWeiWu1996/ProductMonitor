@@ -5,6 +5,11 @@ using System.ComponentModel;
 using System.Text;
 using System.Windows.Controls;
 using ProductMonitor.Models;
+using ProductMonitor.Services;
+using System.Threading.Tasks;
+using System.Windows.Threading;
+using LiveCharts;
+using LiveCharts.Wpf;
 
 
 namespace ProductMonitor.ViewModels
@@ -13,98 +18,82 @@ namespace ProductMonitor.ViewModels
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public MainWindowVM()
+        private readonly IDataService _dataService;
+        private System.Timers.Timer _timer;
+
+        public ChartValues<double> TempValues { get; set; }
+
+        public MainWindowVM(IDataService dataService)
         {
-            #region 初始化環境監控數據
-            EnviromentList = new List<EnviromentModel>();
+            _dataService = dataService;
+            TempValues = new ChartValues<double>();
 
-            EnviromentList.Add(new EnviromentModel() { EnItemName = "光線", EnItemValue = 123 });
-            EnviromentList.Add(new EnviromentModel() { EnItemName = "噪音", EnItemValue = 55 });
-            EnviromentList.Add(new EnviromentModel() { EnItemName = "溫度", EnItemValue = 80 });
-            EnviromentList.Add(new EnviromentModel() { EnItemName = "濕度", EnItemValue = 43 });
-            EnviromentList.Add(new EnviromentModel() { EnItemName = "PM2.5", EnItemValue = 20 });
-            EnviromentList.Add(new EnviromentModel() { EnItemName = "硫化氫", EnItemValue = 15 });
-            EnviromentList.Add(new EnviromentModel() { EnItemName = "氮氣", EnItemValue = 18 });
-            #endregion
+            // 1. 先載入一次完整數據，建立 List 結構
+            LoadData();
 
-            #region 初始化警報數據
-            AlarmList = new List<AlarmModel>();
-            AlarmList.Add(new AlarmModel() { Num = "01", Msg = "設備溫度過高", Time = "2026-11-23 18:34:56", Duration = 7 });
-            AlarmList.Add(new AlarmModel() { Num = "02", Msg = "設備溫度過高", Time = "2026-12-23 15:34:56", Duration = 10 });
-            AlarmList.Add(new AlarmModel() { Num = "03", Msg = "設備轉速過快", Time = "2026-10-23 08:34:56", Duration = 12 });
-            AlarmList.Add(new AlarmModel() { Num = "04", Msg = "設備氣壓偏低", Time = "2026-09-23 20:34:56", Duration = 90 });
-            #endregion
+            _timer = new System.Timers.Timer(1000);
+            _timer.Elapsed += _timer_Elapsed;
+            _timer.Start();
+        }
 
-            #region 初始化設備數據
-            DeviceList = new List<DeviceModel>();
-            DeviceList.Add(new DeviceModel() { Value = "60.8", DeviceItem = "電力" });
-            DeviceList.Add(new DeviceModel() { Value = "390", DeviceItem = "電壓" });
-            DeviceList.Add(new DeviceModel() { Value = "5", DeviceItem = "電流" });
-            DeviceList.Add(new DeviceModel() { Value = "13", DeviceItem = "壓差" });
-            DeviceList.Add(new DeviceModel() { Value = "36", DeviceItem = "溫度" });
-            DeviceList.Add(new DeviceModel() { Value = "4.1", DeviceItem = "震動" });
-            DeviceList.Add(new DeviceModel() { Value = "2600", DeviceItem = "轉速" });
-            DeviceList.Add(new DeviceModel() { Value = "0.5", DeviceItem = "氣壓" });
-            #endregion
+        private void _timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            // 從 Modbus 讀取最新數據 (這是一份全新的 List)
+            var newEnvData = _dataService.GetEnvironmentData();
 
-            #region 初始化雷達數據
-            RaderList = new List<RaderModel>();
-            RaderList.Add(new RaderModel() { ItemName = "抽煙機", Value = 90 });
-            RaderList.Add(new RaderModel() { ItemName = "電梯", Value = 30.00 });
-            RaderList.Add(new RaderModel() { ItemName = "供水器", Value = 34.89 });
-            RaderList.Add(new RaderModel() { ItemName = "泵", Value = 69.59 });
-            RaderList.Add(new RaderModel() { ItemName = "穩壓設備", Value = 20 });
-
-            #endregion
-
-            #region 初始化缺崗人員數據
-            StaffOutWorkList = new List<StaffOutWorkModel>();
-            StaffOutWorkList.Add(new StaffOutWorkModel { StaffName = "張三", Position = "技術員", OutWorkCount = 123 });
-            StaffOutWorkList.Add(new StaffOutWorkModel { StaffName = "李四", Position = "技術員", OutWorkCount = 50 });
-            StaffOutWorkList.Add(new StaffOutWorkModel { StaffName = "王五", Position = "技術員", OutWorkCount = 15 });
-            StaffOutWorkList.Add(new StaffOutWorkModel { StaffName = "楊六", Position = "技術員", OutWorkCount = 20 });
-            StaffOutWorkList.Add(new StaffOutWorkModel { StaffName = "吳七", Position = "工程師", OutWorkCount = 0 });
-
-            #endregion
-
-            #region 底部數據
-
-            WorkShopList = new List<WorkShopModel>();
-            WorkShopList.Add(new WorkShopModel() { WorkShopName = "貼片部", WorkingCount = 120, WaitCount = 20, WrongCount = 5, StopCount = 10 });
-            WorkShopList.Add(new WorkShopModel() { WorkShopName = "封裝部", WorkingCount = 120, WaitCount = 20, WrongCount = 5, StopCount = 10 });
-            WorkShopList.Add(new WorkShopModel() { WorkShopName = "焊接部", WorkingCount = 120, WaitCount = 20, WrongCount = 5, StopCount = 10 });
-            WorkShopList.Add(new WorkShopModel() { WorkShopName = "貼片部", WorkingCount = 120, WaitCount = 20, WrongCount = 5, StopCount = 10 });
-            #endregion
-
-            #region 初始化機台列表
-            MachineList = new List<MachineModel>();
-
-            Random random = new Random();
-            for (int i = 0; i < 20; i++)
+            System.Windows.Application.Current.Dispatcher.Invoke(() =>
             {
-                int plan = random.Next(100, 1000);
-                int finished = random.Next(0, plan);
-
-                MachineList.Add(new MachineModel
+                if (newEnvData != null && newEnvData.Count > 0)
                 {
-                    MachineName = "焊接機-" + (i + 1),
-                    FinishedCount = finished,
-                    PlanCount = plan,
-                    Status = "作業中",
-                    OrderNo = "SO202400"
-                });
-            }
+                    // 【關鍵修正】不要直接 EnviromentList = newEnvData;
+                    // 而是去更新現有 List 裡的數值，這樣 UI 才不會閃爍或重置
+                    if (EnviromentList != null && EnviromentList.Count == newEnvData.Count)
+                    {
+                        for (int i = 0; i < EnviromentList.Count; i++)
+                        {
+                            // 更新數值 (因為 Model 有寫 INotifyPropertyChanged，UI 會自動變)
+                            EnviromentList[i].EnItemValue = newEnvData[i].EnItemValue;
+                            // 更新名稱 (以防變成"斷線"狀態)
+                            EnviromentList[i].EnItemName = newEnvData[i].EnItemName;
+                        }
+                    }
+                    else
+                    {
+                        // 只有第一次或數量不對時，才暴力重置
+                        EnviromentList = newEnvData;
+                    }
 
-            #endregion
+                    // --- 圖表更新邏輯 ---
+                    // 找出目前的 "溫度" 項目
+                    var tempItem = EnviromentList.FirstOrDefault(x => x.EnItemName.Contains("溫度"));
 
+                    if (tempItem != null)
+                    {
+                        TempValues.Add(Convert.ToDouble(tempItem.EnItemValue));
+                        if (TempValues.Count > 20) TempValues.RemoveAt(0);
+                    }
+                }
 
+                // 更新時間
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("HourTime"));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DataTime"));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WeekDay"));
+            });
+        }
 
+        private void LoadData()
+        {
+            EnviromentList = _dataService.GetEnvironmentData();
+            AlarmList = _dataService.GetAlarmData();
+            DeviceList = _dataService.GetDeviceData();
+            RaderList = _dataService.GetRaderData();
+            StaffOutWorkList = _dataService.GetStaffOutWorkData();
+            WorkShopList = _dataService.GetWorkShopData();
+            MachineList = _dataService.GetMachineData();
         }
         /// <summary>
         ///  監控用戶控件
         /// </summary>
-
-
         private UserControl _MonitorUC;
 
 
@@ -136,7 +125,7 @@ namespace ProductMonitor.ViewModels
         {
             get
             {
-                return DateTime.Now.ToString("HH:MM");
+                return DateTime.Now.ToString("HH:mm");
             }
         }
 
@@ -339,6 +328,8 @@ namespace ProductMonitor.ViewModels
         }
 
         #endregion
+
+
 
     }
 }

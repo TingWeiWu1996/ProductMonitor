@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ProductMonitor.Models
 {
-    internal class MachineModel
+    public class MachineModel
     {
         /// <summary>
         /// 機台名稱

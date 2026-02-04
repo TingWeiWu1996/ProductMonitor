@@ -7,7 +7,7 @@ namespace ProductMonitor.Models
     /// <summary>
     /// 設備數據模型
     /// </summary>
-    internal class DeviceModel
+    public class DeviceModel
     {
         /// <summary>
         /// 設備監控項名稱

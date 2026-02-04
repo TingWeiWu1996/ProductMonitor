@@ -7,7 +7,7 @@ namespace ProductMonitor.Models
     /// <summary>
     /// Alarm數據模型
     /// </summary>
-    internal class AlarmModel
+    public class AlarmModel
     {
         /// <summary>
         /// 編號

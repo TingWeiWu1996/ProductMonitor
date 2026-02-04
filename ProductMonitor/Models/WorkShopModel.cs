@@ -9,7 +9,7 @@ namespace ProductMonitor.Models
     /// 底部數據模型
     /// </summary>
 
-    internal class WorkShopModel
+    public class WorkShopModel
     {
         public string WorkShopName { get; set; }
 

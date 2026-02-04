@@ -1,4 +1,5 @@
 ﻿using ProductMonitor.OpCommand;
+using ProductMonitor.Services;
 using ProductMonitor.UserControls;
 using ProductMonitor.ViewModels;
 using ProductMonitor.Views;
@@ -13,6 +14,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ProductMonitor.Models;
 
 namespace ProductMonitor
 {
@@ -22,10 +24,40 @@ namespace ProductMonitor
 
     public partial class MainWindow : Window
     {
-        MainWindowVM mainWindowVM = new MainWindowVM();
+        MainWindowVM mainWindowVM;
         public MainWindow()
         {
             InitializeComponent();
+
+            ReloadService();
+        }
+
+        // 寫一個公開方法，讓設定頁面存檔後可以呼叫它
+        public void ReloadService()
+        {
+            // 判斷現在是用哪種模式
+            IDataService currentService;
+
+            if (DeviceConfig.IsSimulationMode)
+            {
+                // 如果是模擬模式，就用 MockDataService
+                currentService = new MockDataService();
+            }
+            else
+            {
+                // 如果是真實模式，就用 ModbusDataService
+                currentService = new ModbusDataService();
+            }
+
+            // 如果 VM 已經存在，我們可以選擇重建它，或者(更進階的)只換掉它的 Service
+            // 為了簡單起見，我們這裡直接重建一個 VM，這樣 Timer 也會重置，比較安全
+            if (mainWindowVM != null)
+            {
+                // 這裡可以考慮先停掉舊 VM 的 Timer (如果你的 VM 有提供 Stop 方法)
+                // 目前我們直接換掉，舊的會被 GC 回收
+            }
+
+            mainWindowVM = new MainWindowVM(currentService);
             this.DataContext = mainWindowVM;
         }
 
